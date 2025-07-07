@@ -1,0 +1,4 @@
+spring:
+  application.name: live-events-betting
+server:
+  port: ${APPLICATION_HTTP_PORT:8080}
