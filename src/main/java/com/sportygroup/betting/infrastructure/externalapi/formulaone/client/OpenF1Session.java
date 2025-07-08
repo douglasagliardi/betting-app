@@ -17,6 +17,7 @@ package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 //    "year": 2023
 //  }
 public record OpenF1Session(int sessionKey,
+                            String circuitShortName,
                             String location,
                             String sessionType,
                             int year,

@@ -27,7 +27,12 @@ public class DefaultFormulaOneService implements FormulaOneService {
           final var drivers = httpClient.getDrivers(event.sessionKey()).stream()
               .map(mapper::toDomain)
               .toList();
-          return new FormulaOneEvent(event.sessionKey(), drivers);
+          return new FormulaOneEvent(
+              event.sessionKey(),
+              event.circuitShortName(),
+              new FormulaOneEventLocation(event.countryName(), event.countryCode()),
+              drivers
+          );
         })
         .toList();
     return new FormulaOneEvents(result);
