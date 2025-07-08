@@ -19,6 +19,6 @@ public class DefaultFormulaOneMapper implements FormulaOneMapper {
   }
 
   private int getOdd() {
-    return SECURE_RANDOM.nextInt(2, 4);
+    return SECURE_RANDOM.nextInt(2, 5);
   }
 }
