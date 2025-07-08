@@ -1,5 +1,7 @@
 package com.sportygroup.betting.infrastructure.externalapi.formulaone;
 
+import java.util.Optional;
+
 public record FormulaOneParams(String eventType, String countryCode, Integer year) {
 
   public static final class Builder {
@@ -9,18 +11,22 @@ public record FormulaOneParams(String eventType, String countryCode, Integer yea
     Integer year;
 
     public FormulaOneParams.Builder withEventType(final String eventType) {
-      this.eventType = eventType;
+      Optional.ofNullable(eventType).ifPresent(value -> this.eventType = value);
       return this;
     }
 
     public FormulaOneParams.Builder withCountryCode(final String countryCode) {
-      this.countryCode = countryCode;
+      Optional.ofNullable(countryCode).ifPresent(value -> this.countryCode = value);
       return this;
     }
 
-    public FormulaOneParams.Builder withYear(final int year) {
-      this.year = year;
+    public FormulaOneParams.Builder withYear(final Integer year) {
+      Optional.ofNullable(year).ifPresent(value -> this.year = value);
       return this;
+    }
+
+    public FormulaOneParams build() {
+      return new FormulaOneParams(eventType, countryCode, year);
     }
   }
 }
