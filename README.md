@@ -6,7 +6,7 @@
 1. View List of Formula 1 Events
    A. The User queries the list of F1 events which can:
     i. Be filtered by:
-       1. Session Type 
+       1. Session Type
        2. Year
        3. Country
 

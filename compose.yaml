@@ -1,0 +1,29 @@
+---
+services:
+  # Database (PosgreSQL)
+  sportygroup-betting-db:
+    image: 'postgres:17'
+    container_name: sportygroup-postgres-database
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'betting'
+      PGDATA: /data/sportygroup-postgresql
+    volumes:
+      - ./sportygroup-postgresql/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
+      - sportygroup-postgresql:/data/sportygroup-postgresql
+    ports:
+      - '5432:5432'
+
+  # Wiremock & API
+  wiremock-open-f1-api:
+    image: 'wiremock/wiremock:latest'
+    container_name: wiremock-open-f1-api
+    command: "--global-response-templating --verbose"
+    volumes:
+      - ./development/wiremock/openf1-api:/home/wiremock
+    ports:
+      - '9090:8080'
+
+volumes:
+  sportygroup-postgresql:
