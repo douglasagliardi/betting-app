@@ -54,7 +54,17 @@ class FormulaOneResourceIntegrationTest {
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpectAll(
             status().isOk(),
-            jsonPath("$.events.[*]", hasSize(1))
+            jsonPath("$.events.[*]", hasSize(1)),
+            //1st driver
+            jsonPath("$.events.[0].event_id").value(99),
+            jsonPath("$.events.[*].drivers.[*]", hasSize(2)),
+            jsonPath("$.events.[0].drivers[0].id").value(1),
+            jsonPath("$.events.[0].drivers[0].display_name").value("Max Verstappen"),
+            jsonPath("$.events.[0].drivers[0].odd").isNumber(),
+            //2nd driver
+            jsonPath("$.events.[0].drivers[1].id").value(2),
+            jsonPath("$.events.[0].drivers[1].display_name").value("Logan Sargeant"),
+            jsonPath("$.events.[0].drivers[1].odd").isNumber()
         );
   }
 }

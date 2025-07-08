@@ -24,7 +24,9 @@ public class DefaultFormulaOneService implements FormulaOneService {
     final var sessions = httpClient.getSessions(params.eventType(), params.countryCode(), params.year());
     final var result = sessions.stream()
         .map(event -> {
-          final var drivers = httpClient.getDrivers(event.sessionKey()).stream().map(mapper::toDomain).toList();
+          final var drivers = httpClient.getDrivers(event.sessionKey()).stream()
+              .map(mapper::toDomain)
+              .toList();
           return new FormulaOneEvent(event.sessionKey(), drivers);
         })
         .toList();

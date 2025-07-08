@@ -1,5 +1,10 @@
 spring:
   application.name: automobile-betting
+  jackson:
+    deserialization:
+      FAIL-ON-UNKNOWN-PROPERTIES: false
+    property-naming-strategy: SNAKE_CASE
+    time-zone: UTC
   cloud:
     openfeign.client.config:
       openf1-api:
