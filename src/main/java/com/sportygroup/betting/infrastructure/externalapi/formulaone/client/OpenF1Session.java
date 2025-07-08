@@ -1,6 +1,8 @@
 package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 // {
 //    "circuit_key": 7,
@@ -18,11 +20,11 @@ import java.time.OffsetDateTime;
 //    "session_type": "Race",
 //    "year": 2023
 //  }
+@JsonNaming(value = SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record OpenF1Session(int sessionKey,
                             String location,
                             String sessionType,
                             int year,
                             String countryName,
-                            String countryCode,
-                            OffsetDateTime dateStart,
-                            OffsetDateTime dateEnd) { }
+                            String countryCode) {}

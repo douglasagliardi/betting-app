@@ -1,0 +1,8 @@
+spring:
+  application.name: automobile-betting
+  cloud:
+    openfeign.client.config:
+      openf1-api:
+        connect-timeout: 500
+        read-timeout: 1000
+        url: http://localhost:${wiremock.server.port}
