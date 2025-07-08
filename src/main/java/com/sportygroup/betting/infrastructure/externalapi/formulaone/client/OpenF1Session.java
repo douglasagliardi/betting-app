@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 
 import java.time.OffsetDateTime;
 
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 //    "session_type": "Race",
 //    "year": 2023
 //  }
-public record OpenF1Session(long sessionKey,
+public record OpenF1Session(int sessionKey,
                             String location,
                             String sessionType,
                             int year,

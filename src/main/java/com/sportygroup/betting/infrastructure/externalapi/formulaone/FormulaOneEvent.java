@@ -1,0 +1,5 @@
+package com.sportygroup.betting.infrastructure.externalapi.formulaone;
+
+import java.util.Collection;
+
+public record FormulaOneEvent(int eventId, Collection<FormulaOneDriver> drivers) { }

@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 
 // {
 //    "broadcast_name": "M VERSTAPPEN",
