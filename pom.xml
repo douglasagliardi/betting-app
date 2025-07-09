@@ -40,11 +40,6 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.boot</groupId>-->
-<!--      <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--    </dependency>-->
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-amqp</artifactId>
@@ -74,20 +69,33 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!--  Database  -->
-    <!--    <dependency>-->
-    <!--      <groupId>org.flywaydb</groupId>-->
-    <!--      <artifactId>flyway-core</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>org.flywaydb</groupId>-->
-    <!--      <artifactId>flyway-database-postgresql</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>org.postgresql</groupId>-->
-    <!--      <artifactId>postgresql</artifactId>-->
-    <!--      <scope>runtime</scope>-->
-    <!--    </dependency>-->
+    <!-- Persistence   -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.hypersistence</groupId>
+      <artifactId>hypersistence-utils-hibernate-63</artifactId>
+      <version>3.10.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <!--  Declarative Http Client  -->
     <dependency>

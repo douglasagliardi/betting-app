@@ -5,12 +5,12 @@
 
 1. View List of Formula 1 Events
    - The User queries the list of F1 events which can be filtered by: a. Session Type, b. Year and 3. Country.
-   - The System gets the F1 events from the open-source API here and:    
+   - The System gets the F1 events from the open-source API here and:
      - Returns the relevant data to the User. The events are called Sessions inside that API. It also returns the Driver Market of each event:
           - The full name of the Driver.
           - The ID Number of the Driver.
-          - The odds when placing a bet for this driver to win the F1 event.   
-   - For simplicity, value can only be `2`, `3` or `4`.   
+          - The odds when placing a bet for this driver to win the F1 event.
+   - For simplicity, value can only be `2`, `3` or `4`.
    - Always return a random integer between these 3 values.
 
 2. To place a bet.
@@ -20,7 +20,7 @@
    - The System places the bet for the User and updates the User Balance.
 
 3. Event outcome
-   - The System receives a request for a F1 Event that has been finished. 
+   - The System receives a request for a F1 Event that has been finished.
       - We get the ID of the event and the ID of the driver that won.
    - The System saves the outcome.
    - The System checks which bets have won and which ones are lost and updates their status.

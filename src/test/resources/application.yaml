@@ -1,13 +1,27 @@
 spring:
-  application.name: automobile-betting
-  jackson:
-    deserialization:
-      FAIL-ON-UNKNOWN-PROPERTIES: false
-    property-naming-strategy: SNAKE_CASE
-    time-zone: UTC
+  application.name: formulaone-betting
   cloud:
     openfeign.client.config:
       openf1-api:
         connect-timeout: 500
         read-timeout: 1000
         url: http://localhost:${wiremock.server.port}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:tc:postgresql:17-alpine://formulaone-betting
+    username: user
+    password: password
+  flyway:
+    baseline-on-migrate: true
+    schemas: formulaone-betting
+    validate-on-migrate: true
+  jpa:
+    database: POSTGRESQL
+    hibernate.ddl-auto: validate
+    properties.hibernate.default_schema: formulaone-betting
+    show-sql: true
+  jackson:
+    deserialization:
+      FAIL-ON-UNKNOWN-PROPERTIES: false
+    property-naming-strategy: SNAKE_CASE
+    time-zone: UTC
