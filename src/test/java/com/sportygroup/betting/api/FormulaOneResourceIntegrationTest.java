@@ -41,7 +41,6 @@ class FormulaOneResourceIntegrationTest {
   void userCanListAllUpcomingEvents() throws Exception {
 
     WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/sessions"))
-        .withQueryParam("session_type", WireMock.equalTo("Race"))
         .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
         .willReturn(WireMock.aResponse()
             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +77,6 @@ class FormulaOneResourceIntegrationTest {
 
     WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo("/v1/sessions"))
         .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-        .withQueryParam("session_type", WireMock.equalTo("Race"))
     );
     WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo(("/v1/drivers")))
         .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))

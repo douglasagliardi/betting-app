@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping(value = "/api/v1/bets/formulaone")
-public class FormulaOneResource {
+@RequestMapping(value = FormulaOneSpec.BASE_PATH)
+public class FormulaOneResource implements FormulaOneSpec {
 
   private final FormulaOneService formulaOneService;
 
@@ -20,6 +20,7 @@ public class FormulaOneResource {
   }
 
   @GetMapping
+  @Override
   public ResponseEntity<FormulaOneEvents> getEvents(
       @RequestParam(value = "event_type", required = false) final String eventType,
       @RequestParam(value = "country_code", required = false) final String countryCode,
