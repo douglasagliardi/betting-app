@@ -161,4 +161,9 @@ class FormulaOneResourceIntegrationTest {
     }
   }
 
+  @DisplayName("Exception Handling - exception, timeout(s), invalid parameter(s), invalid operations")
+  @Nested
+  final class ErrorHandlingTest {
+
+  }
 }

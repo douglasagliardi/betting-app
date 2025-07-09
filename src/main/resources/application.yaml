@@ -1,7 +1,7 @@
 server:
   port: ${APPLICATION_HTTP_PORT:8080}
 spring:
-  application.name: live-events-betting
+  application.name: formula-one-betting
   cloud.openfeign.client.config:
     openf1-api:
       connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
