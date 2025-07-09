@@ -1,6 +1,6 @@
 package com.sportygroup.betting.api;
 
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.FormulaOneEvents;
+import com.sportygroup.betting.domain.FormulaOneEvents;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

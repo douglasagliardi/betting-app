@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone;
+package com.sportygroup.betting.domain;
 
 import java.util.Optional;
 

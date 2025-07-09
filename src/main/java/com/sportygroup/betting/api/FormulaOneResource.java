@@ -1,8 +1,8 @@
 package com.sportygroup.betting.api;
 
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.FormulaOneEvents;
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.FormulaOneParams;
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.FormulaOneService;
+import com.sportygroup.betting.domain.FormulaOneEvents;
+import com.sportygroup.betting.domain.FormulaOneParams;
+import com.sportygroup.betting.usecase.FormulaOneService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone;
+package com.sportygroup.betting.usecase;
 
 import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.OpenF1Driver;
 import java.security.SecureRandom;

@@ -1,5 +1,9 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone;
+package com.sportygroup.betting.usecase;
 
+import com.sportygroup.betting.domain.FormulaOneEvent;
+import com.sportygroup.betting.domain.FormulaOneEventLocation;
+import com.sportygroup.betting.domain.FormulaOneEvents;
+import com.sportygroup.betting.domain.FormulaOneParams;
 import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.OpenF1ApiClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
