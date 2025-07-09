@@ -5,32 +5,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.sportygroup.betting.BettingApplication;
+import com.sportygroup.betting.IntegrationTests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 0)
-@SpringBootTest(
-    classes = BettingApplication.class,
-    webEnvironment = WebEnvironment.RANDOM_PORT
-)
-@Testcontainers
 @DisplayName("Integration tests - Formula 1 - betting system")
+@IntegrationTests
 class FormulaOneResourceIntegrationTest {
 
   @Autowired
