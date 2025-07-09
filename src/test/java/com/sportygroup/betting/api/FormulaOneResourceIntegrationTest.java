@@ -9,6 +9,8 @@ import com.sportygroup.betting.BettingApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -88,11 +90,16 @@ class FormulaOneResourceIntegrationTest {
   final class QueryEventsWithFilters {
 
     @DisplayName("User should be able to list upcoming events by type")
-    @Test
-    void getEventsByType() throws Exception {
+    @ParameterizedTest
+    @CsvSource(value = {
+        "event_type, session_type, Qualifying",
+        "country_code, country_code, DE",
+        "year, year, 2023"
+    })
+    void getEventsByParameters(final String apiParam, final String partnerApiParam, final String parameterValue) throws Exception {
 
       WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/sessions"))
-          .withQueryParam("session_type", WireMock.equalTo("Qualifying"))
+          .withQueryParam(partnerApiParam, WireMock.equalTo(parameterValue))
           .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
           .willReturn(WireMock.aResponse()
               .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -113,7 +120,7 @@ class FormulaOneResourceIntegrationTest {
               .withBodyFile("openf1-api/drivers/get-drivers-for-race-id-110-success-200.json")));
 
       mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bets/formulaone")
-              .param("event_type", "Qualifying")
+              .param(apiParam, parameterValue)
               .accept(MediaType.APPLICATION_JSON_VALUE))
           .andExpectAll(
               status().isOk(),
@@ -152,7 +159,7 @@ class FormulaOneResourceIntegrationTest {
 
       WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo("/v1/sessions"))
           .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-          .withQueryParam("session_type", WireMock.equalTo("Qualifying"))
+          .withQueryParam(partnerApiParam, WireMock.equalTo(parameterValue))
       );
       //get drivers for 1st event
       WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo(("/v1/drivers")))

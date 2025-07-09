@@ -21,7 +21,7 @@ public class FormulaOneResource {
 
   @GetMapping
   public ResponseEntity<FormulaOneEvents> getEvents(
-      @RequestParam(value = "event_type", required = false, defaultValue = "Race") final String eventType,
+      @RequestParam(value = "event_type", required = false) final String eventType,
       @RequestParam(value = "country_code", required = false) final String countryCode,
       @RequestParam(value = "year", required = false) final Integer year) {
     final var paramsBuilder = new FormulaOneParams.Builder();
