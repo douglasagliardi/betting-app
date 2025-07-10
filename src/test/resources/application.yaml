@@ -18,7 +18,11 @@ spring:
   jpa:
     database: POSTGRESQL
     hibernate.ddl-auto: validate
-    properties.hibernate.default_schema: betting
+    properties:
+      hibernate:
+        default_schema: betting
+        jdbc.batch_size: 20
+      order_updates: true
     show-sql: true
   jackson:
     deserialization:
