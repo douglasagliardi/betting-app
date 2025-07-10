@@ -50,4 +50,9 @@ public class FormulaOneResource implements FormulaOneSpec {
         .buildAndExpand(request.walletId(), orderPlaced.betId()).toUri();
     return ResponseEntity.created(location).build();
   }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> finishEvent(@RequestBody FormulaOneEventResultRequest request) {
+    return ResponseEntity.accepted().build();
+  }
 }

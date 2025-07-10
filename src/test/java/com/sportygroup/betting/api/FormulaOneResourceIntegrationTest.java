@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sportygroup.betting.AbstractIntegrationIT;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -76,35 +77,6 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
           .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
           .withQueryParam("session_key", WireMock.equalTo("99"))
       );
-    }
-  }
-
-  @DisplayName("Betting on events")
-  @Nested
-  final class BetOnEventTest {
-
-    @Test
-    @DisplayName("Customer can place a bet for a driver on an event")
-    @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
-    void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
-
-      final var betPayload = """
-          {
-            "user_id": 1,
-            "wallet_id": 10,
-            "event_id": 1,
-            "amount": 100,
-            "odd": 2
-          }
-          """;
-      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone")
-              .content(betPayload)
-              .contentType(MediaType.APPLICATION_JSON_VALUE)
-              .accept(MediaType.APPLICATION_JSON_VALUE))
-          .andExpectAll(
-              status().isCreated(),
-              header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/1"))
-          );
     }
   }
 
@@ -193,6 +165,68 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
           .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
           .withQueryParam("session_key", WireMock.equalTo("110"))
       );
+    }
+  }
+
+  @DisplayName("Betting on events")
+  @Nested
+  final class BetOnEventTest {
+
+    @Test
+    @DisplayName("Customer can place a bet for a driver on an event")
+    @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
+    void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
+
+      final var betPayload = """
+          {
+            "user_id": 1,
+            "wallet_id": 10,
+            "event_id": 1,
+            "amount": 100,
+            "odd": 2
+          }
+          """;
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone")
+              .content(betPayload)
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .accept(MediaType.APPLICATION_JSON_VALUE))
+          .andExpectAll(
+              status().isCreated(),
+              header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/1"))
+          );
+    }
+
+    @Disabled("Desired but maybe not necessary at this point.")
+    @Test
+    @DisplayName("Customer placing a bet without enough funds should return error with details")
+    @Sql("/sql-script/bootstrap-wallet-without-funds-for-betting.sql")
+    void customerWithoutEnoughBalanceShouldNotBeAbleTo() {
+      //implementation goes here...
+    }
+  }
+
+  @DisplayName("Finishing events")
+  @Nested
+  final class FinishingEventTest {
+
+    @Test
+    @DisplayName("Operator or Agent system on finishing event should payout all winners")
+    @Sql("/sql-script/bootstrap-bet-bookings.sql")
+    void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
+
+      final var eventId = "50";
+
+      final var formulaOneEventCompletedPayload = """
+          {
+              "driver_id": 50,
+              "name": "Fernando Alonso"
+          }
+          """;
+
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone/events/{eventId}", eventId)
+              .content(formulaOneEventCompletedPayload)
+              .contentType(MediaType.APPLICATION_JSON_VALUE))
+          .andExpectAll(status().isAccepted());
     }
   }
 
