@@ -2,11 +2,14 @@ server:
   port: ${APPLICATION_HTTP_PORT:8080}
 spring:
   application.name: formula-one-betting
-  cloud.openfeign.client.config:
-    openf1-api:
-      connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
-      read-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_READ_TIMEOUT:5000}
-      url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
+  cloud.openfeign:
+    compression.response.enabled: true
+    client.config:
+      openf1-api:
+        connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
+        read-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_READ_TIMEOUT:5000}
+        url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
+        logger-level: ${APPLICATION_HTTP_CLIENT_OPENF1_LOG_LEVEL:BASIC}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:betting}
@@ -30,3 +33,15 @@ spring:
     show-sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
   lifecycle:
     timeout-per-shutdown-phase: ${APP_LIFECYCLE_SHUTDOWN_TIMEOUT_IN_SECONDS:20s}
+
+logging:
+  exception-conversion-word: "%wEx"
+  level:
+    com.sportygroup.betting.infrastructure.externalapi.formulaone.client:
+      openf1-api: ${APPLICATION_HTTP_CLIENT_OPENF1_LOGGING_LEVEL:INFO}
+    com.zaxxer.hikari: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
+    org.flyway.core: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
+    org.hibernate: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
+    org.springframework.web: ${APPLICATION_SPRING_WEB_LOGGING_LEVEL:INFO}
+    org.springframework.data: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
+    org.springframework.orm.jpa: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}

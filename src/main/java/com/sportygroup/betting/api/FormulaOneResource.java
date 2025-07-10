@@ -56,6 +56,7 @@ public class FormulaOneResource implements FormulaOneSpec {
   @Override
   @PostMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> finishEvent(@PathVariable("id") final long id, @RequestBody final FormulaOneEventResultRequest request) {
+    betBookingService.completeRace(request);
     return ResponseEntity.accepted().build();
   }
 }
