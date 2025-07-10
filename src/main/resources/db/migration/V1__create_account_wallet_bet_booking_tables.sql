@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS BET_BOOKING
 (
     id         BIGINT
         CONSTRAINT "BET_BOOKING_ID_PK" PRIMARY KEY DEFAULT NEXTVAL('bet_booking_id_seq'),
-    user_id    BIGINT    NOT NULL
+    wallet_id  BIGINT    NOT NULL
         CONSTRAINT "WALLET_ID_FK" REFERENCES WALLET (id),
     event_id   BIGINT    NOT NULL,
     amount     BIGINT    NOT NULL CHECK (amount > 0),
-    odd        NUMERIC(2, 6),
+    odd        INTEGER   NOT NULL,
     created_at TIMESTAMP NOT NULL                  DEFAULT NOW(),
     completed  BOOLEAN                             DEFAULT FALSE
 );

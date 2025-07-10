@@ -1,10 +1,10 @@
 package com.sportygroup.betting.usecase;
 
-import com.sportygroup.betting.domain.CreateBetBooking;
+import com.sportygroup.betting.api.PlaceBetRequest;
 import com.sportygroup.betting.infrastructure.database.BetBooking;
 import com.sportygroup.betting.infrastructure.database.BetBookingRepository;
 import com.sportygroup.betting.infrastructure.database.WalletRepository;
-import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,13 +23,17 @@ public class DefaultBetBookingService implements BetBookingService {
 
   @Override
   @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-  public void create(final CreateBetBooking booking) {
+  public BookedBet create(final PlaceBetRequest booking) {
     final var bet = new BetBooking();
-    bet.setUserId(booking.userId());
+    bet.setWalletId(booking.walletId());
     bet.setAmount(booking.amount());
     bet.setEventId(booking.eventId());
-    bet.setOdd(new BigDecimal(booking.odd()));
-    walletRepository.updateBalance(booking.userId(), booking.amount());
-    betBookingRepository.save(bet);
+    bet.setOdd(booking.odd());
+    bet.setCreatedAt(OffsetDateTime.now());
+    if (walletRepository.updateBalance(booking.walletId(), bet.getAmount() * -1) > 0) {
+      final var entity = betBookingRepository.save(bet);
+      return new BookedBet(entity.getId());
+    }
+    throw new InsufficientFundsException();
   }
 }

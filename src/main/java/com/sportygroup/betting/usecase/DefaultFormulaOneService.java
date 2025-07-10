@@ -23,7 +23,7 @@ public class DefaultFormulaOneService implements FormulaOneService {
   }
 
   @Override
-  public FormulaOneEvents getEvents(final FormulaOneParams params) {
+  public FormulaOneEvents getDriverOddsForEvents(final FormulaOneParams params) {
     LOGGER.atDebug().setMessage("retrieving event(s) using {} as parameters from partner API").addArgument(params).log();
     final var sessions = httpClient.getSessions(params.eventType(), params.countryCode(), params.year());
     final var result = sessions.stream()

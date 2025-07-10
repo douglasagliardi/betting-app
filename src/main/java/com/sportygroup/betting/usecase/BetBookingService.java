@@ -1,8 +1,8 @@
 package com.sportygroup.betting.usecase;
 
-import com.sportygroup.betting.domain.CreateBetBooking;
+import com.sportygroup.betting.api.PlaceBetRequest;
 
 public interface BetBookingService {
 
-  void create(CreateBetBooking booking);
+  BookedBet create(PlaceBetRequest booking);
 }

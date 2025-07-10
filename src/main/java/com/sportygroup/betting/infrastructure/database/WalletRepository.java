@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
   @Modifying
-  @Query("UPDATE Wallet w SET w.balance = w.balance + :amount WHERE w.userId = :userId")
-  void updateBalance(@Param("userId") long userId, @Param("amount") long amount);
+  @Query("UPDATE Wallet SET balance = balance+:amount WHERE id = :walletId")
+  int updateBalance(@Param("walletId") long walletId, @Param("amount") long amount);
 }

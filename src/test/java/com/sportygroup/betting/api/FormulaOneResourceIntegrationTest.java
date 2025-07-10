@@ -90,9 +90,11 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
 
       final var betPayload = """
           {
+            "user_id": 1,
             "wallet_id": 10,
             "event_id": 1,
-            "amount": 100
+            "amount": 100,
+            "odd": 2
           }
           """;
       mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone")
@@ -101,7 +103,7 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
               .accept(MediaType.APPLICATION_JSON_VALUE))
           .andExpectAll(
               status().isCreated(),
-              header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/300"))
+              header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/1"))
           );
     }
   }

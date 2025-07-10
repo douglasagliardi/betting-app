@@ -2,9 +2,9 @@ package com.sportygroup.betting.api;
 
 import com.sportygroup.betting.domain.FormulaOneEvents;
 import com.sportygroup.betting.domain.FormulaOneParams;
+import com.sportygroup.betting.usecase.BetBookingService;
 import com.sportygroup.betting.usecase.FormulaOneService;
 import java.net.URI;
-import java.security.SecureRandom;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,27 +16,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
-@RequestMapping(
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE,
-    value = FormulaOneSpec.BASE_PATH
-)
+@RequestMapping(value = FormulaOneSpec.BASE_PATH)
 public class FormulaOneResource implements FormulaOneSpec {
 
   private final FormulaOneService formulaOneService;
+  private final BetBookingService betBookingService;
 
-  public FormulaOneResource(final FormulaOneService formulaOneService) {
+  public FormulaOneResource(final FormulaOneService formulaOneService, final BetBookingService betBookingService) {
     this.formulaOneService = formulaOneService;
+    this.betBookingService = betBookingService;
   }
 
-  @GetMapping
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @Override
   public ResponseEntity<FormulaOneEvents> getEvents(
       @RequestParam(value = "event_type", required = false) final String eventType,
       @RequestParam(value = "country_code", required = false) final String countryCode,
       @RequestParam(value = "year", required = false) final Integer year) {
     final var paramsBuilder = new FormulaOneParams.Builder();
-    return ResponseEntity.ok(formulaOneService.getEvents(paramsBuilder
+    return ResponseEntity.ok(formulaOneService.getDriverOddsForEvents(paramsBuilder
         .withEventType(eventType)
         .withCountryCode(countryCode)
         .withYear(year)
@@ -44,12 +42,12 @@ public class FormulaOneResource implements FormulaOneSpec {
     );
   }
 
-  @PostMapping
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PlacedBetResponse> placeBet(@RequestBody final PlaceBetRequest request,
       final UriComponentsBuilder uriComponentsBuilder) {
-    final var betResponse = new PlacedBetResponse(300); //this should come from service layer...
+    final var orderPlaced = betBookingService.create(request);
     final URI location = uriComponentsBuilder.path("/api/v1/accounts/wallets/{walletId}/bookings/{betId}")
-        .buildAndExpand(request.walletId(), betResponse.betId()).toUri();
-    return ResponseEntity.created(location).body(betResponse);
+        .buildAndExpand(request.walletId(), orderPlaced.betId()).toUri();
+    return ResponseEntity.created(location).build();
   }
 }

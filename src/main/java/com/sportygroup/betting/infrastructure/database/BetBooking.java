@@ -4,7 +4,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @jakarta.persistence.Entity
@@ -20,10 +19,10 @@ public class BetBooking {
       allocationSize = 1
   )
   private long id;
-  private long userId;
+  private long walletId;
   private long eventId;
   private long amount;
-  private BigDecimal odd;
+  private int odd;
   private OffsetDateTime createdAt;
   private boolean completed;
 
@@ -38,12 +37,12 @@ public class BetBooking {
     this.id = id;
   }
 
-  public long getUserId() {
-    return userId;
+  public long getWalletId() {
+    return walletId;
   }
 
-  public void setUserId(final long userId) {
-    this.userId = userId;
+  public void setWalletId(final long walletId) {
+    this.walletId = walletId;
   }
 
   public long getEventId() {
@@ -59,14 +58,14 @@ public class BetBooking {
   }
 
   public void setAmount(final long amount) {
-    this.amount = amount;
+    this.amount = amount / 100;
   }
 
-  public BigDecimal getOdd() {
+  public int getOdd() {
     return odd;
   }
 
-  public void setOdd(final BigDecimal odd) {
+  public void setOdd(final int odd) {
     this.odd = odd;
   }
 
@@ -90,7 +89,7 @@ public class BetBooking {
   public String toString() {
     return "BetBooking{" +
         "id=" + id +
-        ", userId=" + userId +
+        ", walletId=" + walletId +
         ", eventId=" + eventId +
         ", amount=" + amount +
         ", odd=" + odd +

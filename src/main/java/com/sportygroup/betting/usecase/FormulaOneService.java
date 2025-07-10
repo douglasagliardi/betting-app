@@ -5,5 +5,5 @@ import com.sportygroup.betting.domain.FormulaOneParams;
 
 public interface FormulaOneService {
 
-  FormulaOneEvents getEvents(FormulaOneParams params);
+  FormulaOneEvents getDriverOddsForEvents(FormulaOneParams params);
 }
