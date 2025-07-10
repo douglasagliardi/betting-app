@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS BET_BOOKING
     wallet_id  BIGINT    NOT NULL
         CONSTRAINT "WALLET_ID_FK" REFERENCES WALLET (id),
     event_id   BIGINT    NOT NULL,
+    player_id  INTEGER   NOT NULL,
     amount     BIGINT    NOT NULL CHECK (amount > 0),
     odd        INTEGER   NOT NULL,
     created_at TIMESTAMP NOT NULL                  DEFAULT NOW(),

@@ -2,10 +2,12 @@ package com.sportygroup.betting.usecase;
 
 import com.sportygroup.betting.api.FormulaOneEventResultRequest;
 import com.sportygroup.betting.api.PlaceBetRequest;
+import com.sportygroup.betting.domain.CustomerBetResult;
 import com.sportygroup.betting.infrastructure.database.BetBooking;
 import com.sportygroup.betting.infrastructure.database.BetBookingRepository;
 import com.sportygroup.betting.infrastructure.database.WalletRepository;
 import java.time.OffsetDateTime;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,12 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DefaultBetBookingService implements BetBookingService {
 
+  private final AmqpTemplate messageTemplate;
   private final BetBookingRepository betBookingRepository;
   private final WalletRepository walletRepository;
 
-  public DefaultBetBookingService(final BetBookingRepository betBookingRepository, final WalletRepository walletRepository) {
+  public DefaultBetBookingService(
+      final AmqpTemplate messageTemplate,
+      final BetBookingRepository betBookingRepository,
+      final WalletRepository walletRepository
+  ) {
     this.betBookingRepository = betBookingRepository;
     this.walletRepository = walletRepository;
+    this.messageTemplate = messageTemplate;
   }
 
   @Override
@@ -39,10 +47,29 @@ public class DefaultBetBookingService implements BetBookingService {
   }
 
   @Override
-  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
   public void completeRace(final FormulaOneEventResultRequest eventResult) {
-    //to make this scalable, the bet-booking table should have been partitioned by e.g., country and
-    //the result should be paginated.
-    //final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
+    final var winnerFrom = getWinner(eventResult);
+    final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
+    betsForEvent.forEach(bet -> messageTemplate.convertAndSend("formulaone-bets", getBetResultWith(winnerFrom, bet)));
+  }
+
+  private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {
+    if (f1Result.driverId() == booking.getPlayerId()) {
+      return new CustomerBetResult(booking.getWalletId(), calculateAmount(booking), true);
+    }
+    return new CustomerBetResult(booking.getWalletId(), calculateAmount(booking) * -1, false);
+  }
+
+  private long calculateAmount(final BetBooking booking) {
+    return booking.getAmount() * booking.getOdd();
+  }
+
+  private FormulaOneEventResult getWinner(final FormulaOneEventResultRequest request) {
+    return request.placements()
+        .stream()
+        .filter(e -> e.position() == 1) //finds winner
+        .findFirst()
+        .map(winner -> new FormulaOneEventResult(request.eventId(), winner.driverId()))
+        .orElseThrow();
   }
 }

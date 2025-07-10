@@ -211,8 +211,6 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
     @Sql(value = "/sql-script/cleaning-test-data.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
 
-      final var eventId = "50";
-
       final var formulaOneEventCompletedPayload = """
           {
               "event_id": 1,
@@ -231,7 +229,7 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
           }
           """;
 
-      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone/events/{id}", eventId)
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone/events")
               .content(formulaOneEventCompletedPayload)
               .contentType(MediaType.APPLICATION_JSON_VALUE))
           .andExpectAll(status().isAccepted());
