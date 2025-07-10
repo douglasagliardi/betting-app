@@ -14,19 +14,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @DisplayName("Integration tests - Formula 1 - betting system")
 class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
-
-  @Autowired
-  private MockMvc mockMvc;
 
   @Nested
   final class ViewEventsTest {
@@ -175,6 +171,7 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
     @Test
     @DisplayName("Customer can place a bet for a driver on an event")
     @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
+    @Sql(value = "/sql-script/cleaning-test-data.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
 
       final var betPayload = """
@@ -199,7 +196,6 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
     @Disabled("Desired but maybe not necessary at this point.")
     @Test
     @DisplayName("Customer placing a bet without enough funds should return error with details")
-    @Sql("/sql-script/bootstrap-wallet-without-funds-for-betting.sql")
     void customerWithoutEnoughBalanceShouldNotBeAbleTo() {
       //implementation goes here...
     }
@@ -212,18 +208,30 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
     @Test
     @DisplayName("Operator or Agent system on finishing event should payout all winners")
     @Sql("/sql-script/bootstrap-bet-bookings.sql")
+    @Sql(value = "/sql-script/cleaning-test-data.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
 
       final var eventId = "50";
 
       final var formulaOneEventCompletedPayload = """
           {
-              "driver_id": 50,
-              "name": "Fernando Alonso"
+              "event_id": 1,
+              "placements": [
+                  {
+                      "driver_id": 50,
+                      "position": 1,
+                      "full_name": "Fernando Alonso"
+                  },
+                  {
+                      "driver_id": 99,
+                      "position": 2,
+                      "full_name": "Max Verstappen"
+                  }
+              ]
           }
           """;
 
-      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone/events/{eventId}", eventId)
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone/events/{id}", eventId)
               .content(formulaOneEventCompletedPayload)
               .contentType(MediaType.APPLICATION_JSON_VALUE))
           .andExpectAll(status().isAccepted());

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ public class FormulaOneResource implements FormulaOneSpec {
     );
   }
 
+  @Override
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PlacedBetResponse> placeBet(@RequestBody final PlaceBetRequest request,
       final UriComponentsBuilder uriComponentsBuilder) {
@@ -51,8 +53,9 @@ public class FormulaOneResource implements FormulaOneSpec {
     return ResponseEntity.created(location).build();
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Void> finishEvent(@RequestBody FormulaOneEventResultRequest request) {
+  @Override
+  @PostMapping(value = "/events/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> finishEvent(@PathVariable("id") final long id, @RequestBody final FormulaOneEventResultRequest request) {
     return ResponseEntity.accepted().build();
   }
 }

@@ -43,6 +43,6 @@ public class DefaultBetBookingService implements BetBookingService {
   public void completeRace(final FormulaOneEventResultRequest eventResult) {
     //to make this scalable, the bet-booking table should have been partitioned by e.g., country and
     //the result should be paginated.
-    final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
+    //final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
   }
 }

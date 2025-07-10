@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.security.InvalidParameterException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,9 +52,9 @@ public interface FormulaOneSpec {
       )}
   )
   ResponseEntity<FormulaOneEvents> getEvents(
-      @RequestParam(value = "event_type", required = false) final String eventType,
-      @RequestParam(value = "country_code", required = false) final String countryCode,
-      @RequestParam(value = "year", required = false) final Integer year);
+      @RequestParam(value = "event_type", required = false) String eventType,
+      @RequestParam(value = "country_code", required = false) String countryCode,
+      @RequestParam(value = "year", required = false) Integer year);
 
   @Operation(
       summary = "Place bet for driver on event",
@@ -94,5 +95,7 @@ public interface FormulaOneSpec {
           )
       )}
   )
-  ResponseEntity<PlacedBetResponse> placeBet(@RequestBody final PlaceBetRequest request, final UriComponentsBuilder uriComponentsBuilder);
+  ResponseEntity<PlacedBetResponse> placeBet(@RequestBody PlaceBetRequest request, UriComponentsBuilder uriComponentsBuilder);
+
+  ResponseEntity<Void> finishEvent(@PathVariable long eventId, @RequestBody FormulaOneEventResultRequest request);
 }
