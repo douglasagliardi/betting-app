@@ -7,3 +7,26 @@ spring:
       connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
       read-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_READ_TIMEOUT:5000}
       url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:betting}
+    username: ${DATABASE_USERNAME:admin}
+    password: ${DATABASE_PASSWORD:password}
+  flyway:
+    schemas: ${DATABASE_SCHEMA:betting}
+    baseline-on-migrate: true
+    baseline-version: ${FLYWAY_BASELINE_VERSION:1}
+  jpa:
+    database: POSTGRESQL
+    open-in-view: false
+    properties:
+      hibernate:
+        default_catalog: ${DATABASE_NAME:betting}
+        default_schema: ${DATABASE_SCHEMA:betting}
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
+        show-sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
+    show-sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
+  lifecycle:
+    timeout-per-shutdown-phase: ${APP_LIFECYCLE_SHUTDOWN_TIMEOUT_IN_SECONDS:20s}

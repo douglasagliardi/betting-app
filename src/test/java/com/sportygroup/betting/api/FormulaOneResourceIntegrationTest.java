@@ -1,11 +1,13 @@
 package com.sportygroup.betting.api;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.sportygroup.betting.IntegrationTests;
+import com.sportygroup.betting.AbstractIntegrationIT;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,63 +16,94 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @DisplayName("Integration tests - Formula 1 - betting system")
-@IntegrationTests
-class FormulaOneResourceIntegrationTest {
+class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
 
   @Autowired
   private MockMvc mockMvc;
 
-  @DisplayName("User should list all 'upcoming' events")
-  @Test
-  void userCanListAllUpcomingEvents() throws Exception {
+  @Nested
+  final class ViewEventsTest {
 
-    WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/sessions"))
-        .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-        .willReturn(WireMock.aResponse()
-            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .withBodyFile("openf1-api/sessions/get-all-sessions-no-filter-success-200.json")));
+    @DisplayName("User should list all 'upcoming' events")
+    @Test
+    void userCanListAllUpcomingEvents() throws Exception {
 
-    WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/drivers"))
-        .withQueryParam("session_key", WireMock.equalTo("99"))
-        .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-        .willReturn(WireMock.aResponse()
-            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .withBodyFile("openf1-api/drivers/get-drivers-for-race-id-99-success-200.json")));
+      WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/sessions"))
+          .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
+          .willReturn(WireMock.aResponse()
+              .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+              .withBodyFile("openf1-api/sessions/get-all-sessions-no-filter-success-200.json")));
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bets/formulaone")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpectAll(
-            status().isOk(),
-            jsonPath("$.events.[*]", hasSize(1)),
-            //circuit details
-            jsonPath("$.events.[0].id").value(99),
-            jsonPath("$.events.[0].circuit_name").value("Sakhir"),
-            jsonPath("$.events.[0].location.country").value("Bahrain"),
-            jsonPath("$.events.[0].location.country_code").value("BRN"),
-            //1st driver
-            jsonPath("$.events.[*].drivers.[*]", hasSize(2)),
-            jsonPath("$.events.[0].drivers[0].id").value(1),
-            jsonPath("$.events.[0].drivers[0].display_name").value("Max Verstappen"),
-            jsonPath("$.events.[0].drivers[0].odd").isNumber(),
-            //2nd driver
-            jsonPath("$.events.[0].drivers[1].id").value(2),
-            jsonPath("$.events.[0].drivers[1].display_name").value("Logan Sargeant"),
-            jsonPath("$.events.[0].drivers[1].odd").isNumber()
-        )
-        .andDo(MockMvcResultHandlers.print());
+      WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/v1/drivers"))
+          .withQueryParam("session_key", WireMock.equalTo("99"))
+          .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
+          .willReturn(WireMock.aResponse()
+              .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+              .withBodyFile("openf1-api/drivers/get-drivers-for-race-id-99-success-200.json")));
 
-    WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo("/v1/sessions"))
-        .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-    );
-    WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo(("/v1/drivers")))
-        .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
-        .withQueryParam("session_key", WireMock.equalTo("99"))
-    );
+      mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bets/formulaone")
+              .accept(MediaType.APPLICATION_JSON_VALUE))
+          .andExpectAll(
+              status().isOk(),
+              jsonPath("$.events.[*]", hasSize(1)),
+              //circuit details
+              jsonPath("$.events.[0].id").value(99),
+              jsonPath("$.events.[0].circuit_name").value("Sakhir"),
+              jsonPath("$.events.[0].location.country").value("Bahrain"),
+              jsonPath("$.events.[0].location.country_code").value("BRN"),
+              //1st driver
+              jsonPath("$.events.[*].drivers.[*]", hasSize(2)),
+              jsonPath("$.events.[0].drivers[0].id").value(1),
+              jsonPath("$.events.[0].drivers[0].display_name").value("Max Verstappen"),
+              jsonPath("$.events.[0].drivers[0].odd").isNumber(),
+              //2nd driver
+              jsonPath("$.events.[0].drivers[1].id").value(2),
+              jsonPath("$.events.[0].drivers[1].display_name").value("Logan Sargeant"),
+              jsonPath("$.events.[0].drivers[1].odd").isNumber()
+          )
+          .andDo(MockMvcResultHandlers.print());
+
+      WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo("/v1/sessions"))
+          .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
+      );
+      WireMock.verify(WireMock.getRequestedFor(WireMock.urlPathEqualTo(("/v1/drivers")))
+          .withHeader(HttpHeaders.ACCEPT, WireMock.equalTo(MediaType.APPLICATION_JSON_VALUE))
+          .withQueryParam("session_key", WireMock.equalTo("99"))
+      );
+    }
+  }
+
+  @DisplayName("Betting on events")
+  @Nested
+  final class BetOnEventTest {
+
+    @Test
+    @DisplayName("Customer can place a bet for a driver on an event")
+    @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
+    void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
+
+      final var betPayload = """
+          {
+            "wallet_id": 10,
+            "event_id": 1,
+            "amount": 100
+          }
+          """;
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone")
+              .content(betPayload)
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .accept(MediaType.APPLICATION_JSON_VALUE))
+          .andExpectAll(
+              status().isCreated(),
+              header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/300"))
+          );
+    }
   }
 
   @Nested

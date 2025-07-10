@@ -8,12 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
-@Import(TestcontainersConfiguration.class)
+//@Import(TestcontainersConfiguration.class)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(
     classes = BettingApplication.class,
