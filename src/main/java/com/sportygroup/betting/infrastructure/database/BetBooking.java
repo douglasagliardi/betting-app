@@ -1,0 +1,101 @@
+package com.sportygroup.betting.infrastructure.database;
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+
+@jakarta.persistence.Entity
+public class BetBooking {
+
+  @Id
+  @GeneratedValue(
+      generator = "bet_booking_id_seq",
+      strategy = GenerationType.SEQUENCE
+  )
+  @SequenceGenerator(
+      name = "bet_booking_id_seq",
+      allocationSize = 1
+  )
+  private long id;
+  private long userId;
+  private long eventId;
+  private long amount;
+  private BigDecimal odd;
+  private OffsetDateTime createdAt;
+  private boolean completed;
+
+  public BetBooking() {
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(final long id) {
+    this.id = id;
+  }
+
+  public long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(final long userId) {
+    this.userId = userId;
+  }
+
+  public long getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(final long eventId) {
+    this.eventId = eventId;
+  }
+
+  public long getAmount() {
+    return amount;
+  }
+
+  public void setAmount(final long amount) {
+    this.amount = amount;
+  }
+
+  public BigDecimal getOdd() {
+    return odd;
+  }
+
+  public void setOdd(final BigDecimal odd) {
+    this.odd = odd;
+  }
+
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(final OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public boolean isCompleted() {
+    return completed;
+  }
+
+  public void setCompleted(final boolean completed) {
+    this.completed = completed;
+  }
+
+  @Override
+  public String toString() {
+    return "BetBooking{" +
+        "id=" + id +
+        ", userId=" + userId +
+        ", eventId=" + eventId +
+        ", amount=" + amount +
+        ", odd=" + odd +
+        ", createdAt=" + createdAt +
+        ", completed=" + completed +
+        '}';
+  }
+}
