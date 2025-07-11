@@ -2,15 +2,12 @@
 services:
   betting-db:
     image: 'postgres:17'
-    container_name: sportygroup-postgres-database
+    container_name: f1-bets-db
     environment:
       POSTGRES_USER: 'admin'
       POSTGRES_PASSWORD: 'password'
       POSTGRES_DB: 'betting'
       PGDATA: /data/sportygroup-postgresql
-    volumes:
-      - ./sportygroup-postgresql/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
-      - sportygroup-postgresql:/data/sportygroup-postgresql
     ports:
       - '5432:5432'
 
@@ -35,5 +32,4 @@ services:
       - '9090:8080'
 
 volumes:
-  sportygroup-postgresql:
   rabbitmq_data:

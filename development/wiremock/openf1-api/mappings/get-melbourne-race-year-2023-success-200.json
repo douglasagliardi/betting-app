@@ -3,6 +3,12 @@
     "method": "GET",
     "urlPath": "/v1/sessions",
     "queryParameters": {
+      "session_type": {
+        "equalTo": "Race"
+      },
+      "country_code": {
+        "equalTo": "AUS"
+      },
       "year": {
         "equalTo": "2023"
       }
@@ -10,7 +16,7 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "sessions/get-all-sessions-year-2023-success-200.json",
+    "bodyFileName": "sessions/get-melbourne-race-year-2023-success-200.json",
     "headers": {
       "Content-Type": "application/json"
     }

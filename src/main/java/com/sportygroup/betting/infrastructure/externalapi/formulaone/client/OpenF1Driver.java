@@ -1,5 +1,8 @@
 package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 // {
 //    "broadcast_name": "M VERSTAPPEN",
 //    "country_code": "NED",
@@ -14,6 +17,7 @@ package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
 //    "team_colour": "3671C6",
 //    "team_name": "Red Bull Racing"
 //  }
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record OpenF1Driver(int driverNumber,
                            String firstName,
                            String lastName,

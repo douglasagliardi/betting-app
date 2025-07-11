@@ -7,6 +7,8 @@ import com.sportygroup.betting.infrastructure.database.BetBooking;
 import com.sportygroup.betting.infrastructure.database.BetBookingRepository;
 import com.sportygroup.betting.infrastructure.database.WalletRepository;
 import java.time.OffsetDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DefaultBetBookingService implements BetBookingService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBetBookingService.class);
 
   private final AmqpTemplate messageTemplate;
   private final BetBookingRepository betBookingRepository;
@@ -32,14 +36,15 @@ public class DefaultBetBookingService implements BetBookingService {
 
   @Override
   @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-  public BookedBet create(final PlaceBetRequest booking) {
+  public BookedBet create(final PlaceBetRequest request) {
     final var bet = new BetBooking();
-    bet.setWalletId(booking.walletId());
-    bet.setAmount(booking.amount());
-    bet.setEventId(booking.eventId());
-    bet.setOdd(booking.odd());
+    bet.setWalletId(request.walletId());
+    bet.setAmount(request.amount());
+    bet.setEventId(request.eventId());
+    bet.setPlayerId(request.playerId());
+    bet.setOdd(request.odd());
     bet.setCreatedAt(OffsetDateTime.now());
-    if (walletRepository.updateBalance(booking.walletId(), bet.getAmount() * -1) > 0) {
+    if (walletRepository.updateBalance(request.walletId(), bet.getAmount() * -1) > 0) {
       final var entity = betBookingRepository.save(bet);
       return new BookedBet(entity.getId());
     }
@@ -50,14 +55,17 @@ public class DefaultBetBookingService implements BetBookingService {
   public void completeRace(final FormulaOneEventResultRequest eventResult) {
     final var winnerFrom = getWinner(eventResult);
     final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
+    if (betsForEvent.isEmpty()) {
+      LOGGER.atInfo().setMessage("Unable to find any bets for event '{}'.").addArgument(eventResult.eventId()).log();
+    }
     betsForEvent.forEach(bet -> messageTemplate.convertAndSend("formulaone-bets", getBetResultWith(winnerFrom, bet)));
   }
 
   private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {
     if (f1Result.driverId() == booking.getPlayerId()) {
-      return new CustomerBetResult(booking.getWalletId(), calculateAmount(booking), true);
+      return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking), true);
     }
-    return new CustomerBetResult(booking.getWalletId(), calculateAmount(booking) * -1, false);
+    return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking) * -1, false);
   }
 
   private long calculateAmount(final BetBooking booking) {

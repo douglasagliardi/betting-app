@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sportygroup.betting.AbstractIntegrationIT;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -191,13 +190,6 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
               status().isCreated(),
               header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/1"))
           );
-    }
-
-    @Disabled("Desired but maybe not necessary at this point.")
-    @Test
-    @DisplayName("Customer placing a bet without enough funds should return error with details")
-    void customerWithoutEnoughBalanceShouldNotBeAbleTo() {
-      //implementation goes here...
     }
   }
 

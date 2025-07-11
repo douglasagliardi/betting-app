@@ -29,6 +29,5 @@ spring:
       FAIL-ON-UNKNOWN-PROPERTIES: false
     property-naming-strategy: SNAKE_CASE
     time-zone: UTC
-  sql.init.mode: ALWAYS
 
 application.messaging.formulaone.bets.queue: formulaone-bets

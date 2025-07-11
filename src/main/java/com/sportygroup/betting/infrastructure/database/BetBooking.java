@@ -67,7 +67,7 @@ public class BetBooking {
   }
 
   public void setAmount(final long amount) {
-    this.amount = amount / 100;
+    this.amount = amount;
   }
 
   public int getOdd() {

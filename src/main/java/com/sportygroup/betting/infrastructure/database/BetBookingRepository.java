@@ -10,9 +10,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BetBookingRepository extends JpaRepository<BetBooking, Long> {
 
-  Collection<BetBooking> findByEventId(Long eventId);
+  @Query("SELECT b FROM BetBooking b WHERE b.eventId = :eventId AND b.completed = false")
+  Collection<BetBooking> findByEventId(long eventId);
 
   @Modifying
-  @Query("UPDATE BetBooking SET completed = true WHERE walletId = :walletId")
-  void completeBooking(@Param("walletId") long walletId);
+  @Query("UPDATE BetBooking SET completed = true WHERE id = :betId AND walletId = :walletId")
+  void completeBooking(@Param("betId") long betId, @Param("walletId") long walletId);
 }

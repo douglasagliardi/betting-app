@@ -9,7 +9,8 @@ spring:
       openf1-api:
         connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
         read-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_READ_TIMEOUT:5000}
-        url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
+        #url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
+        url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:http://localhost:9090}
         logger-level: ${APPLICATION_HTTP_CLIENT_OPENF1_LOG_LEVEL:BASIC}
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -31,23 +32,23 @@ spring:
         format_sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
         show-sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
     show-sql: ${APPLICATION_DATABASE_JPA_DEBUG_MODE:false}
+  jackson:
+    deserialization:
+      FAIL-ON-UNKNOWN-PROPERTIES: false
+    property-naming-strategy: SNAKE_CASE
+    time-zone: UTC
   lifecycle:
     timeout-per-shutdown-phase: ${APP_LIFECYCLE_SHUTDOWN_TIMEOUT_IN_SECONDS:20s}
 
 management:
-  metrics:
-    enable:
-      jdbc: false
-      logback: false
-      tomcat: false
   tracing:
     propagation:
       type: B3
-      consume: [B3, W3C]
+      consume: [ B3, W3C ]
       produce: B3
   endpoints:
     web.exposure:
-      include: health,info,prometheus
+      include: health, info
   server:
     port: ${APPLICATION_MANAGEMENT_PORT:8081}
 

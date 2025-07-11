@@ -1,14 +1,61 @@
 ### Get events for year of 2023
-GET http://localhost:8080/api/v1/bets/formulaone?event_type=Race&year=2023
+GET http://localhost:8080/api/v1/bets/formulaone?event_type=Race&country_code=AUS&year=2023
 
-###
+### Place a bet for customer #1 and wallet 1 - this driver (1) will be the winner of the event.
 POST http://localhost:8080/api/v1/bets/formulaone
 Content-Type: application/json
 
 {
-
+  "player_id": 50,
+  "wallet_id": 1,
+  "event_id": 7787,
+  "amount": 50,
+  "odd": 4
 }
 
+### Place a bet for customer #1 and wallet 2 - this driver (2) will not win but will serve to account for balance check after event.
+POST http://localhost:8080/api/v1/bets/formulaone
+Content-Type: application/json
+
+{
+  "player_id": 2,
+  "wallet_id": 1,
+  "event_id": 7787,
+  "amount": 25,
+  "odd": 2
+}
+
+### Place a bet for customer #2 and wallet 1 - this driver (2) will not win but will serve to account for balance check after event.
+POST http://localhost:8080/api/v1/bets/formulaone
+Content-Type: application/json
+
+{
+  "player_id": 10,
+  "wallet_id": 10,
+  "event_id": 7787,
+  "amount": 75,
+  "odd": 3
+}
+
+### Complete an event to collect or pay-out winners
+POST http://localhost:8080/api/v1/bets/formulaone/events
+Content-Type: application/json
+
+{
+  "event_id": 7787,
+  "placements": [
+    {
+      "driver_id": 50,
+      "position": 1,
+      "full_name": "Fernando Alonso"
+    },
+    {
+      "driver_id": 99,
+      "position": 2,
+      "full_name": "Max Verstappen"
+    }
+  ]
+}
 
 ### Testing out Wiremock - simulating OpenF1 API
 
@@ -17,3 +64,5 @@ GET http://localhost:9090/v1/sessions?year=2023
 GET http://localhost:9090/v1/sessions?session_type=Race&year=2023
 ###
 GET http://localhost:9090/v1/drivers?session_key=7787
+###
+GET http://localhost:9090/v1/sessions?session_type=Race&country_code=AUS&year=2023
