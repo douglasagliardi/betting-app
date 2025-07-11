@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/v1/drivers",
+    "queryParameters": {
+      "session_key": {
+        "equalTo": "7787"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "drivers/get-drivers-for-race-id-7787-success-200.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
