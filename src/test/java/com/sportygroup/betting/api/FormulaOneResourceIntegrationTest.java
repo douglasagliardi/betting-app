@@ -176,6 +176,7 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
       final var betPayload = """
           {
             "user_id": 1,
+            "driver_id": 1,
             "wallet_id": 10,
             "event_id": 1,
             "amount": 100,

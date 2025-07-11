@@ -21,7 +21,7 @@ public class BetBooking {
   private long id;
   private long walletId;
   private long eventId;
-  private int playerId;
+  private int driverId;
   private long amount;
   private int odd;
   private OffsetDateTime createdAt;
@@ -54,12 +54,12 @@ public class BetBooking {
     this.eventId = eventId;
   }
 
-  public int getPlayerId() {
-    return playerId;
+  public int getDriverId() {
+    return driverId;
   }
 
-  public void setPlayerId(final int playerId) {
-    this.playerId = playerId;
+  public void setDriverId(final int driverId) {
+    this.driverId = driverId;
   }
 
   public long getAmount() {
@@ -100,7 +100,7 @@ public class BetBooking {
         "id=" + id +
         ", walletId=" + walletId +
         ", eventId=" + eventId +
-        ", playerId=" + playerId +
+        ", driverId=" + driverId +
         ", amount=" + amount +
         ", odd=" + odd +
         ", createdAt=" + createdAt +

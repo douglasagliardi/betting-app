@@ -41,7 +41,7 @@ public class DefaultBetBookingService implements BetBookingService {
     bet.setWalletId(request.walletId());
     bet.setAmount(request.amount());
     bet.setEventId(request.eventId());
-    bet.setPlayerId(request.playerId());
+    bet.setDriverId(request.driverId());
     bet.setOdd(request.odd());
     bet.setCreatedAt(OffsetDateTime.now());
     if (walletRepository.updateBalance(request.walletId(), bet.getAmount() * -1) > 0) {
@@ -62,7 +62,7 @@ public class DefaultBetBookingService implements BetBookingService {
   }
 
   private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {
-    if (f1Result.driverId() == booking.getPlayerId()) {
+    if (f1Result.driverId() == booking.getDriverId()) {
       return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking), true);
     }
     return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking) * -1, false);

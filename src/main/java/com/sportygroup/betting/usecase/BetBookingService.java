@@ -6,5 +6,6 @@ import com.sportygroup.betting.api.PlaceBetRequest;
 public interface BetBookingService {
 
   BookedBet create(PlaceBetRequest booking);
+
   void completeRace(final FormulaOneEventResultRequest eventResult);
 }
