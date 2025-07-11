@@ -24,7 +24,7 @@ public class BetBookingProcessable {
 
   @Transactional
   @RabbitListener(queues = {"${application.messaging.formulaone.bets.queue}"})
-  public void listen(final CustomerBetResult message) {
+  public void processCustomerBet(final CustomerBetResult message) {
     LOGGER.atInfo().setMessage("Received Bet Booking Message from queue: '{}'").addArgument(message).log();
     walletRepository.updateBalance(message.walletId(), message.amount());
     betBookingRepository.completeBooking(message.walletId());

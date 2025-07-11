@@ -37,7 +37,7 @@ public class MessageSystemConfiguration {
 
   @Bean
   public DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
-    DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+    final DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
     factory.setMessageConverter(consumerJackson2MessageConverter());
     return factory;
   }
