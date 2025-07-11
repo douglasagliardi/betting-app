@@ -48,7 +48,7 @@ public class DefaultBetBookingService implements BetBookingService {
       final var entity = betBookingRepository.save(bet);
       return new BookedBet(entity.getId());
     }
-    throw new InsufficientFundsException();
+    throw new InsufficientFundsException(request.walletId(), request.amount());
   }
 
   @Override
@@ -78,6 +78,6 @@ public class DefaultBetBookingService implements BetBookingService {
         .filter(e -> e.position() == 1) //finds winner
         .findFirst()
         .map(winner -> new FormulaOneEventResult(request.eventId(), winner.driverId()))
-        .orElseThrow();
+        .orElseThrow(() -> new NotEventWinnerFoundException(request.eventId()));
   }
 }
