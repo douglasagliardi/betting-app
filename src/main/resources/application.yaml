@@ -64,4 +64,17 @@ logging:
     org.springframework.data: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
     org.springframework.orm.jpa: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
 
+springdoc:
+  api-docs:
+    enabled: ${APPLICATION_DOCUMENTATION_ENABLED:true} #note: usually this is only enabled on lower environment(s)!
+    path: /docs/api.json
+  swagger-ui:
+    enabled: ${APPLICATION_DOCUMENTATION_ENABLED:true}
+    default-models-expand-depth: -1
+    operationsSorter: alpha
+    path: /docs/api.html
+    try-it-out-enabled: ${APPLICATION_DOCUMENTATION_ENABLED:true}
+  writer-with-default-pretty-printer: true
+  writer-with-order-by-keys: true
+
 application.messaging.formulaone.bets.queue: formulaone-bets
