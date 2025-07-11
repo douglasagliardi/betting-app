@@ -9,4 +9,4 @@ import io.swagger.v3.oas.annotations.media.Schema;
     name = "id",
     type = "long"
 )
-public @interface FormulaOneIdSchema { }
+public @interface FormulaOneEventIdSchema { }

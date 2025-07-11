@@ -2,6 +2,7 @@ package com.sportygroup.betting.api;
 
 import com.sportygroup.betting.domain.FormulaOneEvents;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -63,7 +64,13 @@ public interface FormulaOneSpec {
       @ApiResponse(
           responseCode = "201",
           description = "Successfully created",
-          content = @Content
+          content = @Content,
+          headers = {
+              @Header(
+                  name = "Location",
+                  description = "Resource location after customer has placed a bet successfully",
+                  example = "/api/v1/accounts/wallets/100/bookings/5000")
+          }
       ),
       @ApiResponse(
           responseCode = "400",
@@ -97,8 +104,8 @@ public interface FormulaOneSpec {
   )
   @ApiResponses(value = {
       @ApiResponse(
-          responseCode = "201",
-          description = "Successfully created",
+          responseCode = "202",
+          description = "Accepted",
           content = @Content
       ),
       @ApiResponse(
