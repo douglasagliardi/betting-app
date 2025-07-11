@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.security.InvalidParameterException;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,23 +30,21 @@ public interface FormulaOneSpec {
           description = "Successful operation",
           content = @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(oneOf = {
-                  String.class,
-              })
+              schema = @Schema(implementation = FormulaOneEvents.class)
           )
       ),
       @ApiResponse(
           responseCode = "400",
           description = "Invalid parameters",
           content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-              schema = @Schema(implementation = InvalidParameterException.class)
+              schema = @Schema(implementation = ProblemDetail.class)
           )
       ),
       @ApiResponse(
           responseCode = "500",
           description = "Internal server error",
           content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-              schema = @Schema(implementation = String.class)
+              schema = @Schema(implementation = ProblemDetail.class)
           )
       )}
   )
@@ -65,36 +63,58 @@ public interface FormulaOneSpec {
       @ApiResponse(
           responseCode = "201",
           description = "Successfully created",
-          content = @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(oneOf = {
-                  String.class,
-              })
-          )
+          content = @Content
       ),
       @ApiResponse(
           responseCode = "400",
           description = "Invalid parameters",
           content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-              schema = @Schema(implementation = InvalidParameterException.class)
+              schema = @Schema(implementation = ProblemDetail.class)
           )
       ),
       @ApiResponse(
           responseCode = "412",
           description = "Invalid parameters",
           content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-              schema = @Schema(implementation = InvalidParameterException.class)
+              schema = @Schema(implementation = ProblemDetail.class)
           )
       ),
       @ApiResponse(
           responseCode = "500",
           description = "Internal server error",
           content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-              schema = @Schema(implementation = String.class)
+              schema = @Schema(implementation = ProblemDetail.class)
           )
       )}
   )
   ResponseEntity<PlacedBetResponse> placeBet(@RequestBody PlaceBetRequest request, UriComponentsBuilder uriComponentsBuilder);
 
+  @Operation(
+      summary = "Place bet for driver on event",
+      description = "Requests the placement of a bet for racing driver on a given event.",
+      operationId = "placeBet",
+      tags = "formula-one"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "201",
+          description = "Successfully created",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Invalid parameters",
+          content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+              schema = @Schema(implementation = ProblemDetail.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "Internal server error",
+          content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+              schema = @Schema(implementation = ProblemDetail.class)
+          )
+      )}
+  )
   ResponseEntity<Void> finishEvent(@RequestBody FormulaOneEventResultRequest request);
 }

@@ -39,6 +39,9 @@ spring:
     time-zone: UTC
   lifecycle:
     timeout-per-shutdown-phase: ${APP_LIFECYCLE_SHUTDOWN_TIMEOUT_IN_SECONDS:20s}
+  mvc:
+    problemdetails.enabled: true
+    log-request-details: ${APPLICATION_WEB_ENABLE_LOG_REQUEST:false}
 
 management:
   tracing:
