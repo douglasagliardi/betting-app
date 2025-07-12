@@ -2,6 +2,7 @@ package com.sportygroup.betting.api;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
@@ -190,6 +192,35 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
           .andExpectAll(
               status().isCreated(),
               header().string("Location", is("http://localhost/api/v1/accounts/wallets/10/bookings/1"))
+          );
+    }
+
+    @Test
+    @DisplayName("Customer placing a bet for a driver on an event with amount exceeding it's wallet balance should return an error")
+    void customerPlacingBetWithAmountBiggerThanBalanceShouldReturnError() throws Exception {
+
+      final var betPayload = """
+          {
+            "user_id": 1,
+            "driver_id": 1,
+            "wallet_id": 10,
+            "event_id": 1,
+            "amount": 101,
+            "odd": 2
+          }
+          """;
+      mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bets/formulaone")
+              .content(betPayload)
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .accept(MediaType.APPLICATION_JSON_VALUE))
+          .andExpectAll(
+              status().is4xxClientError(),
+              status().isPreconditionFailed(),
+              header().string("Location", nullValue()),
+              jsonPath("$.title").value("Precondition Failed"),
+              jsonPath("$.status").value(HttpStatus.PRECONDITION_FAILED.value()),
+              jsonPath("$.detail").value("wallet balance insufficient to place bet"),
+              jsonPath("$.instance").value("/api/v1/bets/formulaone")
           );
     }
   }

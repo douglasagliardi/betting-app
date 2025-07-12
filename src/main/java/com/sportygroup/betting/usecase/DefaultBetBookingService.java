@@ -48,11 +48,15 @@ public class DefaultBetBookingService implements BetBookingService {
     bet.setDriverId(request.driverId());
     bet.setOdd(request.odd());
     bet.setCreatedAt(OffsetDateTime.now());
-    if (walletRepository.updateBalance(request.walletId(), bet.getAmount() * -1) > 0) {
+    if (walletRepository.updateBalance(request.walletId(), negateAmount(bet)) > 0) {
       final var entity = betBookingRepository.save(bet);
       return new BookedBet(entity.getId());
     }
     throw new InsufficientFundsException(request.walletId(), request.amount());
+  }
+
+  private long negateAmount(final BetBooking bet) {
+    return bet.getAmount() * -1;
   }
 
   @Override
@@ -69,7 +73,7 @@ public class DefaultBetBookingService implements BetBookingService {
     if (f1Result.driverId() == booking.getDriverId()) {
       return CustomerBetResult.winner(booking.getId(), booking.getWalletId(), booking.getAmount() * booking.getOdd());
     }
-    return CustomerBetResult.loser(booking.getId(), booking.getWalletId(), booking.getAmount() * -1);
+    return CustomerBetResult.loser(booking.getId(), booking.getWalletId(), booking.getAmount());
   }
 
   private FormulaOneEventResult getWinner(final FormulaOneEventResultRequest request) {

@@ -50,7 +50,7 @@ class BetBookingProcessableTest {
   void betLoserShouldCompleteWithoutUpdatingBalanceSuccessful() {
 
     final var walletId = 1L;
-    final var betAmount = -100L;
+    final var betAmount = 100L;
     final var betId = 1L;
     final var betResult = CustomerBetResult.loser(betId, walletId, betAmount);
 
