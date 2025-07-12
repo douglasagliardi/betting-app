@@ -1,5 +1,6 @@
 package com.sportygroup.betting.api;
 
+import com.sportygroup.betting.usecase.UnableToPlaceBetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,5 +20,17 @@ public class FormulaOneBetControllerAdvice extends ResponseEntityExceptionHandle
     final var message = "wallet balance insufficient to place bet";
     LOGGER.atWarn().setMessage(message + ". Exception details: '{}'").addArgument(exception.getMessage()).log();
     return ProblemDetail.forStatusAndDetail(HttpStatus.PRECONDITION_FAILED, message);
+  }
+
+  @ExceptionHandler(exception = UnableToPlaceBetException.class)
+  public ProblemDetail handleUnableToPlaceBetException(final UnableToPlaceBetException exception) {
+    LOGGER.atWarn().setMessage("Error: '{}'").addArgument(exception.getMessage()).log();
+    return ProblemDetail.forStatusAndDetail(HttpStatus.PRECONDITION_FAILED, exception.getMessage());
+  }
+
+  @ExceptionHandler(exception = Exception.class)
+  public ProblemDetail handleException(final Exception exception) {
+    LOGGER.atError().setMessage("Unhandled exception: Details: '{}'").addArgument(exception.getMessage()).log();
+    return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "unable to handle request");
   }
 }

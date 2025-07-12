@@ -92,7 +92,7 @@ class DefaultBetBookingServiceTest {
     when(walletRepository.updateBalance(walletId, amountToDeduct))
         .thenReturn(0); // -> 0 rows changed
 
-    assertThrows(InsufficientFundsException.class, () -> betBookingService.create(betRequest));
+    assertThrows(UnableToPlaceBetException.class, () -> betBookingService.create(betRequest));
 
     verify(walletRepository).updateBalance(walletId, amountToDeduct);
     verify(betBookingRepository, never()).save(any());

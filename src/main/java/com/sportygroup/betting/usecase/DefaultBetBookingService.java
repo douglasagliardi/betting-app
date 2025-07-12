@@ -52,7 +52,7 @@ public class DefaultBetBookingService implements BetBookingService {
       final var entity = betBookingRepository.save(bet);
       return new BookedBet(entity.getId());
     }
-    throw new InsufficientFundsException(request.walletId(), request.amount());
+    throw new UnableToPlaceBetException(request.walletId(), request.amount());
   }
 
   private long negateAmount(final BetBooking bet) {
