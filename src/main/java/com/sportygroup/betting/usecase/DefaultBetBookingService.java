@@ -6,6 +6,7 @@ import com.sportygroup.betting.domain.CustomerBetResult;
 import com.sportygroup.betting.infrastructure.database.BetBooking;
 import com.sportygroup.betting.infrastructure.database.BetBookingRepository;
 import com.sportygroup.betting.infrastructure.database.WalletRepository;
+import com.sportygroup.betting.infrastructure.message.QueueProperties;
 import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +24,18 @@ public class DefaultBetBookingService implements BetBookingService {
   private final AmqpTemplate messageTemplate;
   private final BetBookingRepository betBookingRepository;
   private final WalletRepository walletRepository;
+  private final QueueProperties queueProperties;
 
   public DefaultBetBookingService(
       final AmqpTemplate messageTemplate,
       final BetBookingRepository betBookingRepository,
-      final WalletRepository walletRepository
+      final WalletRepository walletRepository,
+      final QueueProperties queueProperties
   ) {
     this.betBookingRepository = betBookingRepository;
     this.walletRepository = walletRepository;
     this.messageTemplate = messageTemplate;
+    this.queueProperties = queueProperties;
   }
 
   @Override
@@ -58,18 +62,14 @@ public class DefaultBetBookingService implements BetBookingService {
     if (betsForEvent.isEmpty()) {
       LOGGER.atInfo().setMessage("Unable to find any bets for event '{}'.").addArgument(eventResult.eventId()).log();
     }
-    betsForEvent.forEach(bet -> messageTemplate.convertAndSend("formulaone-bets", getBetResultWith(winnerFrom, bet)));
+    betsForEvent.forEach(bet -> messageTemplate.convertAndSend(queueProperties.queue(), getBetResultWith(winnerFrom, bet)));
   }
 
   private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {
     if (f1Result.driverId() == booking.getDriverId()) {
-      return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking), true);
+      return new CustomerBetResult(booking.getId(), booking.getWalletId(), booking.getAmount() * booking.getOdd(), true);
     }
-    return new CustomerBetResult(booking.getId(), booking.getWalletId(), calculateAmount(booking) * -1, false);
-  }
-
-  private long calculateAmount(final BetBooking booking) {
-    return booking.getAmount() * booking.getOdd();
+    return new CustomerBetResult(booking.getId(), booking.getWalletId(), booking.getAmount() * -1, false);
   }
 
   private FormulaOneEventResult getWinner(final FormulaOneEventResultRequest request) {
