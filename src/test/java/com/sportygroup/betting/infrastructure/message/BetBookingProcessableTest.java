@@ -34,7 +34,7 @@ class BetBookingProcessableTest {
     final var walletId = 1L;
     final var betAmount = 100L;
     final var betId = 1L;
-    final var betResult = new CustomerBetResult(betId, walletId, betAmount, true);
+    final var betResult = CustomerBetResult.winner(betId, walletId, betAmount);
 
     when(walletRepository.updateBalance(walletId, betAmount)).thenReturn(1);
     doNothing().when(betBookingRepository).completeBooking(betId, walletId);
@@ -50,9 +50,9 @@ class BetBookingProcessableTest {
   void betLoserShouldCompleteWithoutUpdatingBalanceSuccessful() {
 
     final var walletId = 1L;
-    final var betAmount = 100L;
+    final var betAmount = -100L;
     final var betId = 1L;
-    final var betResult = new CustomerBetResult(betId, walletId, betAmount, false);
+    final var betResult = CustomerBetResult.loser(betId, walletId, betAmount);
 
     doNothing().when(betBookingRepository).completeBooking(betId, walletId);
 

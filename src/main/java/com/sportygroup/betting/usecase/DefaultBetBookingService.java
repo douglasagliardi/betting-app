@@ -67,9 +67,9 @@ public class DefaultBetBookingService implements BetBookingService {
 
   private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {
     if (f1Result.driverId() == booking.getDriverId()) {
-      return new CustomerBetResult(booking.getId(), booking.getWalletId(), booking.getAmount() * booking.getOdd(), true);
+      return CustomerBetResult.winner(booking.getId(), booking.getWalletId(), booking.getAmount() * booking.getOdd());
     }
-    return new CustomerBetResult(booking.getId(), booking.getWalletId(), booking.getAmount() * -1, false);
+    return CustomerBetResult.loser(booking.getId(), booking.getWalletId(), booking.getAmount() * -1);
   }
 
   private FormulaOneEventResult getWinner(final FormulaOneEventResultRequest request) {

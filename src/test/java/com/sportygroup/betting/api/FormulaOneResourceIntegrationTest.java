@@ -165,14 +165,12 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
 
   @DisplayName("Betting on events")
   @Nested
-  @Sql("/sql-script/bootstrap-bet-bookings.sql")
+  @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
   @Sql(value = "/sql-script/cleaning-test-data.sql", executionPhase = ExecutionPhase.AFTER_TEST_CLASS)
   final class BetOnEventTest {
 
     @Test
     @DisplayName("Customer can place a bet for a driver on an event")
-    @Sql("/sql-script/bootstrap-wallet-for-betting.sql")
-    @Sql(value = "/sql-script/cleaning-test-data.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void customerCanPlaceBetForADriverOnANewEvent() throws Exception {
 
       final var betPayload = """
