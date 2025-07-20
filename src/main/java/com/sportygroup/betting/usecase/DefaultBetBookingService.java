@@ -77,15 +77,13 @@ public class DefaultBetBookingService implements BetBookingService {
   }
 
   private void sliced(final int numberOfDbRequests, final FormulaOneEventResultRequest eventResult, final FormulaOneEventResult winner) {
-    int dbAccess = 0;
-    while (dbAccess < numberOfDbRequests) {
-      final var betsForEvent = betBookingRepository.findByEventId(Page.page(PAGE_SIZE, dbAccess), eventResult.eventId());
+    for (int index = 0; index < numberOfDbRequests; index++) {
+      final var betsForEvent = betBookingRepository.findByEventId(Page.page(PAGE_SIZE, index), eventResult.eventId());
       if (betsForEvent.isEmpty()) {
         LOGGER.atInfo().setMessage("Unable to find any bets for event '{}'.").addArgument(eventResult.eventId()).log();
         return;
       }
       betsForEvent.forEach(bet -> messageTemplate.convertAndSend(queueProperties.queue(), getBetResultWith(winner, bet)));
-      dbAccess++;
     }
   }
 
