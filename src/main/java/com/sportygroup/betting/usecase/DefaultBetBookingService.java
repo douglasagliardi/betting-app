@@ -8,6 +8,7 @@ import com.sportygroup.betting.infrastructure.database.BetBookingRepository;
 import com.sportygroup.betting.infrastructure.database.WalletRepository;
 import com.sportygroup.betting.infrastructure.message.QueueProperties;
 import java.time.OffsetDateTime;
+import org.hibernate.query.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultBetBookingService implements BetBookingService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBetBookingService.class);
+
+  private static final int PAGE_SIZE = 20;
 
   private final AmqpTemplate messageTemplate;
   private final BetBookingRepository betBookingRepository;
@@ -62,11 +65,28 @@ public class DefaultBetBookingService implements BetBookingService {
   @Override
   public void completeRace(final FormulaOneEventResultRequest eventResult) {
     final var winnerFrom = getWinner(eventResult);
-    final var betsForEvent = betBookingRepository.findByEventId(eventResult.eventId());
-    if (betsForEvent.isEmpty()) {
-      LOGGER.atInfo().setMessage("Unable to find any bets for event '{}'.").addArgument(eventResult.eventId()).log();
+    final var totalBetForEventId = betBookingRepository.countByEventId(eventResult.eventId());
+    sliced(getPageSize(totalBetForEventId), eventResult, winnerFrom);
+  }
+
+  private int getPageSize(final float totalBetForEventId) {
+    if (totalBetForEventId <= PAGE_SIZE) {
+      return 1;
     }
-    betsForEvent.forEach(bet -> messageTemplate.convertAndSend(queueProperties.queue(), getBetResultWith(winnerFrom, bet)));
+    return Math.round(totalBetForEventId / PAGE_SIZE);
+  }
+
+  private void sliced(final int numberOfDbRequests, final FormulaOneEventResultRequest eventResult, final FormulaOneEventResult winner) {
+    int dbAccess = 0;
+    while (dbAccess < numberOfDbRequests) {
+      final var betsForEvent = betBookingRepository.findByEventId(Page.page(PAGE_SIZE, dbAccess), eventResult.eventId());
+      if (betsForEvent.isEmpty()) {
+        LOGGER.atInfo().setMessage("Unable to find any bets for event '{}'.").addArgument(eventResult.eventId()).log();
+        return;
+      }
+      betsForEvent.forEach(bet -> messageTemplate.convertAndSend(queueProperties.queue(), getBetResultWith(winner, bet)));
+      dbAccess++;
+    }
   }
 
   private CustomerBetResult getBetResultWith(final FormulaOneEventResult f1Result, final BetBooking booking) {

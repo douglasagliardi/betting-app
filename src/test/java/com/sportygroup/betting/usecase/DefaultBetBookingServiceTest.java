@@ -23,6 +23,8 @@ import com.sportygroup.betting.infrastructure.database.WalletRepository;
 import com.sportygroup.betting.infrastructure.message.QueueProperties;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.stream.IntStream;
+import org.hibernate.query.Page;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,10 +87,6 @@ class DefaultBetBookingServiceTest {
 
     final var betRequest = new PlaceBetRequest(1L, walletId, 1, amount, 2);
 
-    final var betId = new SecureRandom().nextLong();
-    final var dbBooking = new BetBooking();
-    dbBooking.setId(betId);
-
     when(walletRepository.updateBalance(walletId, amountToDeduct))
         .thenReturn(0); // -> 0 rows changed
 
@@ -122,16 +120,17 @@ class DefaultBetBookingServiceTest {
 
     final var queueName = "formulaone-bets";
     when(queueProperties.queue()).thenReturn(queueName);
-    when(betBookingRepository.findByEventId(1)).thenReturn(List.of(betOne, betTwo));
+    when(betBookingRepository.countByEventId(1L)).thenReturn(2);
+    when(betBookingRepository.findByEventId(any(Page.class), eq(1L))).thenReturn(List.of(betOne, betTwo));
 
     final var messageArgCaptor = ArgumentCaptor.forClass(CustomerBetResult.class);
     doNothing().when(messageTemplate).convertAndSend(eq(queueName), messageArgCaptor.capture());
 
     betBookingService.completeRace(request);
 
-    verify(betBookingRepository).findByEventId(1);
-    verify(messageTemplate, times(2))
-        .convertAndSend(eq(queueName), any(CustomerBetResult.class));
+    verify(betBookingRepository).countByEventId(1L);
+    verify(betBookingRepository).findByEventId(any(Page.class), eq(1L));
+    verify(messageTemplate, times(2)).convertAndSend(eq(queueName), any(CustomerBetResult.class));
 
     assertEquals(2, messageArgCaptor.getAllValues().size());
     final var firstEvent = messageArgCaptor.getAllValues().getFirst();
@@ -141,5 +140,58 @@ class DefaultBetBookingServiceTest {
     final var secondEvent = messageArgCaptor.getAllValues().getLast();
     assertEquals(-25, secondEvent.amount());
     assertFalse(secondEvent.succeeded());
+  }
+
+  @DisplayName("receiving event completion with winners and losers should create one event for each with matching values (e.g; amount")
+  @Test
+  void receiving100BetsForEventShouldPaginate5Times() {
+
+    final var firstBatch = IntStream.rangeClosed(1, 21).mapToObj(this::fakeBet).toList();
+    final var secondBatch = IntStream.range(21, 41).mapToObj(this::fakeBet).toList();
+    final var thirdBatch = IntStream.range(41, 61).mapToObj(this::fakeBet).toList();
+    final var fourthBatch = IntStream.range(61, 81).mapToObj(this::fakeBet).toList();
+    final var fifthBatch = IntStream.range(81, 100).mapToObj(this::fakeBet).toList();
+
+    final var request = new FormulaOneEventResultRequest(1, List.of(
+        new FormulaOneRacer(3, 3),
+        new FormulaOneRacer(2, 2),
+        new FormulaOneRacer(1, 1)
+    ));
+
+    final var queueName = "formulaone-bets";
+    when(queueProperties.queue()).thenReturn(queueName);
+    when(betBookingRepository.countByEventId(1L)).thenReturn(100);
+    when(betBookingRepository.findByEventId(any(Page.class), eq(1L)))
+        .thenReturn(firstBatch)
+        .thenReturn(secondBatch)
+        .thenReturn(thirdBatch)
+        .thenReturn(fourthBatch)
+        .thenReturn(fifthBatch);
+
+    final var messageArgCaptor = ArgumentCaptor.forClass(CustomerBetResult.class);
+    doNothing().when(messageTemplate).convertAndSend(eq(queueName), messageArgCaptor.capture());
+
+    betBookingService.completeRace(request);
+
+    verify(betBookingRepository).countByEventId(1L);
+    verify(betBookingRepository, times(5)).findByEventId(any(Page.class), eq(1L));
+    verify(messageTemplate, times(100)).convertAndSend(eq(queueName), any(CustomerBetResult.class));
+
+    assertEquals(100, messageArgCaptor.getAllValues().size());
+  }
+
+  private BetBooking fakeBet(final int id) {
+    final var bet = new BetBooking();
+    final var generator = new SecureRandom();
+    bet.setId(id);
+    bet.setOdd(generator.nextInt(2, 4));
+    if (id % 2 == 0) {
+      bet.setDriverId(1);
+      bet.setAmount(50);
+    } else {
+      bet.setDriverId(2);
+      bet.setAmount(10L);
+    }
+    return bet;
   }
 }
