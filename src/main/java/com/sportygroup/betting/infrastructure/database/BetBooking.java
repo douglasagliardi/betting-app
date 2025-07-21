@@ -1,13 +1,14 @@
 package com.sportygroup.betting.infrastructure.database;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import java.time.OffsetDateTime;
 
-@jakarta.persistence.Entity
-public class BetBooking {
+@Entity
+public class BetBooking extends BaseEntity {
 
   @Id
   @GeneratedValue(

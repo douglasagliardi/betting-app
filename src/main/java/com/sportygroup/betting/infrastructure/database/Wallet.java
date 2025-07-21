@@ -1,12 +1,13 @@
 package com.sportygroup.betting.infrastructure.database;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 
-@jakarta.persistence.Entity
-public class Wallet extends Entity {
+@Entity
+public class Wallet extends BaseEntity {
 
   @Id
   @GeneratedValue(

@@ -146,11 +146,11 @@ class DefaultBetBookingServiceTest {
   @Test
   void receiving100BetsForEventShouldPaginate5Times() {
 
-    final var firstBatch = IntStream.rangeClosed(1, 21).mapToObj(this::fakeBet).toList();
+    final var firstBatch = IntStream.range(1, 21).mapToObj(this::fakeBet).toList();
     final var secondBatch = IntStream.range(21, 41).mapToObj(this::fakeBet).toList();
     final var thirdBatch = IntStream.range(41, 61).mapToObj(this::fakeBet).toList();
     final var fourthBatch = IntStream.range(61, 81).mapToObj(this::fakeBet).toList();
-    final var fifthBatch = IntStream.range(81, 100).mapToObj(this::fakeBet).toList();
+    final var fifthBatch = IntStream.range(81, 101).mapToObj(this::fakeBet).toList();
 
     final var request = new FormulaOneEventResultRequest(1, List.of(
         new FormulaOneRacer(3, 3),
@@ -178,6 +178,8 @@ class DefaultBetBookingServiceTest {
     verify(messageTemplate, times(100)).convertAndSend(eq(queueName), any(CustomerBetResult.class));
 
     assertEquals(100, messageArgCaptor.getAllValues().size());
+    assertEquals(50, messageArgCaptor.getAllValues().stream().filter(e -> e.amount() > 0).count()); //half has won
+    assertEquals(50, messageArgCaptor.getAllValues().stream().filter(e -> e.amount() < 0).count()); //half has lost
   }
 
   private BetBooking fakeBet(final int id) {
