@@ -11,22 +11,26 @@ import org.springframework.stereotype.Component;
 public class DefaultProviderServiceSelectable implements ProviderServiceSelectable {
 
   private final ProviderDatasourceRepository repository;
-  private final Collection<FormulaOneApiService> formulaOneServices;
+  private final Collection<FormulaOneApiService> formulaOneApiCandidates;
 
   public DefaultProviderServiceSelectable(final ProviderDatasourceRepository repository,
-      final Collection<FormulaOneApiService> formulaOneServices) {
+      final Collection<FormulaOneApiService> formulaOneApiCandidates) {
     this.repository = repository;
-    this.formulaOneServices = formulaOneServices;
+    this.formulaOneApiCandidates = formulaOneApiCandidates;
   }
 
   @Override
   public FormulaOneApiService getApiService() {
     final var provider = repository.findByType(SportyType.FORMULA_ONE)
         .map(ProviderDatasource::getProvider)
-        .orElseThrow();
-    return formulaOneServices.stream()
+        .orElse("fallback");
+    return formulaOneApiCandidates.stream()
         .filter(e -> e.getProvider().equalsIgnoreCase(provider))
         .findFirst()
-        .orElseThrow();
+        .orElseGet(this::getFallback);
+  }
+
+  private FormulaOneApiService getFallback() {
+    return formulaOneApiCandidates.stream().filter(FormulaOneApiService::isFallback).findFirst().orElseThrow();
   }
 }

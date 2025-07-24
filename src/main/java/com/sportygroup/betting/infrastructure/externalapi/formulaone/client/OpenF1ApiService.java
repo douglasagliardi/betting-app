@@ -27,6 +27,11 @@ public class OpenF1ApiService implements FormulaOneApiService {
   }
 
   @Override
+  public boolean isFallback() {
+    return true;
+  }
+
+  @Override
   public FormulaOneEvents getRaces(final FormulaOneRaceQuery raceQuery) {
     final var sessions = httpClient.getSessions(raceQuery.eventType(), raceQuery.countryCode(), raceQuery.year());
     final var result = sessions.stream()

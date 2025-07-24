@@ -17,6 +17,11 @@ public class ProviderDatasource extends BaseEntity {
   public ProviderDatasource() {
   }
 
+  public ProviderDatasource(final SportyType type, final String provider) {
+    this.type = type;
+    this.provider = provider;
+  }
+
   public long getId() {
     return id;
   }
