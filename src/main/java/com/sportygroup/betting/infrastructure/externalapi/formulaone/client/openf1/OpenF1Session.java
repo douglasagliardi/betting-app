@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client.openf1;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

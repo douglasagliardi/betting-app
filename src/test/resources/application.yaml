@@ -6,6 +6,10 @@ spring:
         connect-timeout: 500
         read-timeout: 1000
         url: http://localhost:${wiremock.server.port}
+      f1-livepulse-api:
+        connect-timeout: 500
+        read-timeout: 1000
+        url: http://localhost:${wiremock.server.port}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:tc:postgresql:17-alpine://betting

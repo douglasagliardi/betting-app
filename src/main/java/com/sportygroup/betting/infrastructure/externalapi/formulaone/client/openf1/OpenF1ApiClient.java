@@ -1,4 +1,4 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client.openf1;
 
 import java.util.Collection;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,9 +1,9 @@
 package com.sportygroup.betting.usecase;
 
 import com.sportygroup.betting.domain.FormulaOneEvents;
-import com.sportygroup.betting.domain.FormulaOneParams;
+import com.sportygroup.betting.domain.FormulaOneRaceQuery;
 
 public interface FormulaOneService {
 
-  FormulaOneEvents getDriverOddsForEvents(FormulaOneParams params);
+  FormulaOneEvents getDriverOddsForEvents(FormulaOneRaceQuery params);
 }

@@ -77,6 +77,7 @@ class FormulaOneResourceIntegrationTest extends AbstractIntegrationIT {
     }
   }
 
+  @DisplayName("Get odds of drivers for events")
   @Nested
   final class QueryEventsWithFilters {
 

@@ -9,9 +9,13 @@ spring:
       openf1-api:
         connect-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_CONNECTION_TIMEOUT:500}
         read-timeout: ${APPLICATION_HTTP_CLIENT_OPENF1_API_READ_TIMEOUT:5000}
-        #url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:https://api.openf1.org}
         url: ${APPLICATION_HTTP_CLIENT_OPENF1_API_HOST:http://localhost:9090}
         logger-level: ${APPLICATION_HTTP_CLIENT_OPENF1_LOG_LEVEL:BASIC}
+      f1-livepulse-api:
+        connect-timeout: ${APPLICATION_HTTP_CLIENT_F1_LIVEPULSE_API_CONNECTION_TIMEOUT:1000}
+        read-timeout: ${APPLICATION_HTTP_CLIENT_F1_LIVEPULSE_API_READ_TIMEOUT:8000}
+        url: ${APPLICATION_HTTP_CLIENT_F1_LIVEPULSE_API_HOST:http://localhost:9191}
+        logger-level: ${APPLICATION_HTTP_CLIENT_F1_LIVEPULSE_LOG_LEVEL:BASIC}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:betting}
@@ -60,6 +64,7 @@ logging:
   level:
     com.sportygroup.betting.infrastructure.externalapi.formulaone.client:
       openf1-api: ${APPLICATION_HTTP_CLIENT_OPENF1_LOGGING_LEVEL:INFO}
+      f1livepulse: ${APPLICATION_HTTP_CLIENT_F1_LIVEPULSE_LOGGING_LEVEL:INFO}
     com.zaxxer.hikari: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
     org.flyway.core: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
     org.hibernate: ${APPLICATION_PERSISTENCE_LOGGING_LEVEL:WARN}
