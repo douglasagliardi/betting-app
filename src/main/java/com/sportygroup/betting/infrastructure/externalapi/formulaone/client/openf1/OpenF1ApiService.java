@@ -1,12 +1,11 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client.openf1;
 
 import com.sportygroup.betting.domain.FormulaOneDriver;
 import com.sportygroup.betting.domain.FormulaOneEvent;
 import com.sportygroup.betting.domain.FormulaOneEventLocation;
 import com.sportygroup.betting.domain.FormulaOneEvents;
 import com.sportygroup.betting.domain.FormulaOneRaceQuery;
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.openf1.OpenF1ApiClient;
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.openf1.OpenF1Mapper;
+import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.FormulaOneApiService;
 import java.util.Collection;
 import org.springframework.stereotype.Service;
 

@@ -1,11 +1,11 @@
-package com.sportygroup.betting.infrastructure.externalapi.formulaone.client;
+package com.sportygroup.betting.infrastructure.externalapi.formulaone.client.livepulse;
 
 import com.sportygroup.betting.domain.FormulaOneDriver;
 import com.sportygroup.betting.domain.FormulaOneEvent;
 import com.sportygroup.betting.domain.FormulaOneEventLocation;
 import com.sportygroup.betting.domain.FormulaOneEvents;
 import com.sportygroup.betting.domain.FormulaOneRaceQuery;
-import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.livepulse.F1LivePulseApiClient;
+import com.sportygroup.betting.infrastructure.externalapi.formulaone.client.FormulaOneApiService;
 import java.util.Collection;
 import org.springframework.stereotype.Component;
 
