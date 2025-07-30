@@ -22,13 +22,17 @@ public class BetBookingProcessable {
     this.walletRepository = walletRepository;
   }
 
+  //WE SHOULD AVOID PROCESSING DUPLICATED MESSAGES HERE...
   @Transactional
   @RabbitListener(queues = {"${application.messaging.formulaone.bets.queue}"})
   public void processCustomerBet(final CustomerBetResult customerBet) {
     LOGGER.atInfo().setMessage("Received Bet Booking Message from queue: '{}'").addArgument(customerBet).log();
-    if (customerBet.succeeded()) { //only update balance positively if customer has won the bet!
-      walletRepository.updateBalance(customerBet.walletId(), customerBet.amount());
+    if (betBookingRepository.isBetBookingOpen(customerBet.walletId())) {
+      if (customerBet.succeeded()) { //only update balance positively if customer has won the bet!
+        walletRepository.updateBalance(customerBet.walletId(), customerBet.amount());
+      }
+      betBookingRepository.completeBooking(customerBet.betId(), customerBet.walletId());
     }
-    betBookingRepository.completeBooking(customerBet.betId(), customerBet.walletId());
+    LOGGER.atInfo().setMessage("Bet Booking '{}' is already completed. Ignoring this message.").addArgument(customerBet.betId()).log();
   }
 }

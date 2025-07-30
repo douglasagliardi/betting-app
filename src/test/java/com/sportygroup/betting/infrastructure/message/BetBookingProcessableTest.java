@@ -36,11 +36,13 @@ class BetBookingProcessableTest {
     final var betId = 1L;
     final var betResult = CustomerBetResult.winner(betId, walletId, betAmount);
 
+    when(betBookingRepository.isBetBookingOpen(betId)).thenReturn(true);
     when(walletRepository.updateBalance(walletId, betAmount)).thenReturn(1);
     doNothing().when(betBookingRepository).completeBooking(betId, walletId);
 
     betProcessable.processCustomerBet(betResult);
 
+    verify(betBookingRepository).isBetBookingOpen(betId);
     verify(walletRepository).updateBalance(walletId, betAmount);
     verify(betBookingRepository).completeBooking(betId, walletId);
   }
@@ -54,11 +56,31 @@ class BetBookingProcessableTest {
     final var betId = 1L;
     final var betResult = CustomerBetResult.loser(betId, walletId, betAmount);
 
+    when(betBookingRepository.isBetBookingOpen(betId)).thenReturn(true);
     doNothing().when(betBookingRepository).completeBooking(betId, walletId);
 
     betProcessable.processCustomerBet(betResult);
 
+    verify(betBookingRepository).isBetBookingOpen(betId);
     verify(walletRepository, never()).updateBalance(anyLong(), anyLong());
     verify(betBookingRepository).completeBooking(betId, walletId);
+  }
+
+  @DisplayName("bet booking already processed should not do any updates")
+  @Test
+  void betBookingAlreadyProcessedShouldNotDoAnyUpdates() {
+
+    final var walletId = 1L;
+    final var betAmount = 100L;
+    final var betId = 1L;
+    final var betResult = CustomerBetResult.loser(betId, walletId, betAmount);
+
+    when(betBookingRepository.isBetBookingOpen(betId)).thenReturn(false);
+
+    betProcessable.processCustomerBet(betResult);
+
+    verify(betBookingRepository).isBetBookingOpen(betId);
+    verify(walletRepository, never()).updateBalance(anyLong(), anyLong());
+    verify(betBookingRepository, never()).completeBooking(betId, walletId);
   }
 }

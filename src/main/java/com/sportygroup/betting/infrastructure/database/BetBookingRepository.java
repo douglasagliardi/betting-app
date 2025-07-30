@@ -14,6 +14,9 @@ public interface BetBookingRepository extends JpaRepository<BetBooking, Long> {
   @Query("SELECT count(id) FROM BetBooking WHERE eventId = :eventId and completed = false")
   int countByEventId(long eventId);
 
+  @Query("SELECT b.completed FROM BetBooking b WHERE b.id = :betId and b.completed = false")
+  boolean isBetBookingOpen(long betId);
+
   @Query("SELECT b FROM BetBooking b WHERE b.eventId = :eventId AND b.completed = false")
   Collection<BetBooking> findByEventId(final Page page, long eventId);
 
